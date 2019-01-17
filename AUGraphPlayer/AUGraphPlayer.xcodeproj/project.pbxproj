@@ -17,6 +17,7 @@
 		B86187FB21F05900006435E6 /* AUGraphPlayerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = B86187FA21F05900006435E6 /* AUGraphPlayerUITests.m */; };
 		B861880A21F05A2A006435E6 /* AUGraphPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B861880921F05A2A006435E6 /* AUGraphPlayer.m */; };
 		B861880C21F090E1006435E6 /* 遇见.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B861880B21F090E1006435E6 /* 遇见.mp3 */; };
+		B861881121F0AE80006435E6 /* SEAudioUnitPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B861881021F0AE80006435E6 /* SEAudioUnitPlayer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,8 @@
 		B861880821F05A2A006435E6 /* AUGraphPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUGraphPlayer.h; sourceTree = "<group>"; };
 		B861880921F05A2A006435E6 /* AUGraphPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUGraphPlayer.m; sourceTree = "<group>"; };
 		B861880B21F090E1006435E6 /* 遇见.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "遇见.mp3"; sourceTree = "<group>"; };
+		B861880F21F0AE80006435E6 /* SEAudioUnitPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SEAudioUnitPlayer.h; sourceTree = "<group>"; };
+		B861881021F0AE80006435E6 /* SEAudioUnitPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SEAudioUnitPlayer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +121,8 @@
 				B86187E521F05900006435E6 /* main.m */,
 				B861880821F05A2A006435E6 /* AUGraphPlayer.h */,
 				B861880921F05A2A006435E6 /* AUGraphPlayer.m */,
+				B861880F21F0AE80006435E6 /* SEAudioUnitPlayer.h */,
+				B861881021F0AE80006435E6 /* SEAudioUnitPlayer.m */,
 			);
 			path = AUGraphPlayer;
 			sourceTree = "<group>";
@@ -271,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B861881121F0AE80006435E6 /* SEAudioUnitPlayer.m in Sources */,
 				B86187DB21F058FE006435E6 /* ViewController.m in Sources */,
 				B86187E621F05900006435E6 /* main.m in Sources */,
 				B86187D821F058FE006435E6 /* AppDelegate.m in Sources */,
