@@ -15,6 +15,8 @@
 		B86187E621F05900006435E6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B86187E521F05900006435E6 /* main.m */; };
 		B86187F021F05900006435E6 /* AUGraphPlayerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B86187EF21F05900006435E6 /* AUGraphPlayerTests.m */; };
 		B86187FB21F05900006435E6 /* AUGraphPlayerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = B86187FA21F05900006435E6 /* AUGraphPlayerUITests.m */; };
+		B861880A21F05A2A006435E6 /* AUGraphPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B861880921F05A2A006435E6 /* AUGraphPlayer.m */; };
+		B861880C21F090E1006435E6 /* 遇见.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B861880B21F090E1006435E6 /* 遇见.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,9 @@
 		B86187F621F05900006435E6 /* AUGraphPlayerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AUGraphPlayerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B86187FA21F05900006435E6 /* AUGraphPlayerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUGraphPlayerUITests.m; sourceTree = "<group>"; };
 		B86187FC21F05900006435E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B861880821F05A2A006435E6 /* AUGraphPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AUGraphPlayer.h; sourceTree = "<group>"; };
+		B861880921F05A2A006435E6 /* AUGraphPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUGraphPlayer.m; sourceTree = "<group>"; };
+		B861880B21F090E1006435E6 /* 遇见.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "遇见.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +106,7 @@
 		B86187D521F058FE006435E6 /* AUGraphPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				B861880B21F090E1006435E6 /* 遇见.mp3 */,
 				B86187D621F058FE006435E6 /* AppDelegate.h */,
 				B86187D721F058FE006435E6 /* AppDelegate.m */,
 				B86187D921F058FE006435E6 /* ViewController.h */,
@@ -110,6 +116,8 @@
 				B86187E121F05900006435E6 /* LaunchScreen.storyboard */,
 				B86187E421F05900006435E6 /* Info.plist */,
 				B86187E521F05900006435E6 /* main.m */,
+				B861880821F05A2A006435E6 /* AUGraphPlayer.h */,
+				B861880921F05A2A006435E6 /* AUGraphPlayer.m */,
 			);
 			path = AUGraphPlayer;
 			sourceTree = "<group>";
@@ -235,6 +243,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B861880C21F090E1006435E6 /* 遇见.mp3 in Resources */,
 				B86187E321F05900006435E6 /* LaunchScreen.storyboard in Resources */,
 				B86187E021F05900006435E6 /* Assets.xcassets in Resources */,
 				B86187DE21F058FE006435E6 /* Main.storyboard in Resources */,
@@ -265,6 +274,7 @@
 				B86187DB21F058FE006435E6 /* ViewController.m in Sources */,
 				B86187E621F05900006435E6 /* main.m in Sources */,
 				B86187D821F058FE006435E6 /* AppDelegate.m in Sources */,
+				B861880A21F05A2A006435E6 /* AUGraphPlayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
