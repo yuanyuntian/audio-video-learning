@@ -11,7 +11,14 @@
             命令：brew install nginx-full --with-rtmp-module
         3.启动,测试安装是否成功，在浏览器地址栏输入：http://localhost:8080 显示网页正常即可
             命令: nginx 
+            
+            
+            
+            
+1 利用AUGraph播放本地mp3文件(参考项目AUGraphPlayer)
         
 
         
         
+
+
