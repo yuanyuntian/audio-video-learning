@@ -15,6 +15,8 @@
 {
     AVAudioSession * _session;//音频硬件环境
     NSString * _path;//资源路径
+    
+    AudioUnit   _PlayerUnit;
 }
 @end
 
@@ -63,6 +65,42 @@
                                                object:nil];
 }
 
+-(void)setupAudioUnitInfo{
+    
+    AudioComponentDescription outputUinitDesc;
+    bzero(&outputUinitDesc, sizeof(outputUinitDesc));
+    outputUinitDesc.componentManufacturer = kAudioUnitManufacturer_Apple;
+    outputUinitDesc.componentType = kAudioUnitType_Output;
+    outputUinitDesc.componentSubType = kAudioUnitSubType_RemoteIO;
+    outputUinitDesc.componentFlags = 0;
+    outputUinitDesc.componentFlagsMask = 0;
+    AudioComponent outComponent = AudioComponentFindNext(NULL, &outputUinitDesc); 
+    OSStatus status = AudioComponentInstanceNew(outComponent, &_PlayerUnit);  
+    checkStatus(status, @"set Player Unit faile...", YES);
+    
+    //给AudioUnit设置参数
+    AudioStreamBasicDescription pcmStreamDesc;
+    UInt32 bytesPerSample = sizeof(Float32);
+    bzero(&pcmStreamDesc, sizeof(pcmStreamDesc));
+    pcmStreamDesc.mFormatID          = kAudioFormatLinearPCM;//指定音频格式
+    //mFormatFlagsa表示格式：FloatPacked表示格式是float
+    //NonInterleaved表示音频存储的的AudioBufferList中的mBuffer[0]是左声道 mBuffer[1]是又声道 非交错存放
+    //如果使用Interleaved 左右声道数据交错存放在mBuffer[0]中
+    pcmStreamDesc.mFormatFlags       = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved;//
+    pcmStreamDesc.mFramesPerPacket   = 1;
+    pcmStreamDesc.mBytesPerFrame     = bytesPerSample;
+    pcmStreamDesc.mChannelsPerFrame  = 2;                    // 2 indicates stereo
+    //mBitsPerChannel和mBytesPerPacket的赋值 需要看mFormatFlags 如果是NonInterleaved 就赋值 bytesPerSample
+    //如果是Interleaved 则需要bytesPerSample * Channels
+    pcmStreamDesc.mBitsPerChannel    = 8 * bytesPerSample;//一个声道的音频数据用多少位来表示 float类型
+    pcmStreamDesc.mBytesPerPacket    = bytesPerSample;
+    pcmStreamDesc.mSampleRate        = 44100;
+    status = AudioUnitSetProperty(_PlayerUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &pcmStreamDesc, sizeof(pcmStreamDesc));  
+    checkStatus(status, @"set Player Unit StreamFormat faile...", YES);
+
+    
+}
+
 #pragma mark ——— notification observer
 - (void)onNotificationAudioRouteChange:(NSNotification *)sender{
     NSDictionary * info = sender.userInfo;
@@ -109,6 +147,21 @@
 #pragma -mark暂停
 -(void)pause{
     
+}
+
+void checkStatus(OSStatus status, NSString * message, BOOL fatal){
+    if (status != noErr) {
+        char fourC[16];
+        *(UInt32*)fourC = CFSwapInt32HostToBig(status);
+        fourC[4] = '\0';
+        
+        if(isprint(fourC[0]) && isprint(fourC[1]) && isprint(fourC[2]) && isprint(fourC[3])){
+            NSLog(@"%@: %s", message, fourC);
+        }else{
+            NSLog(@"%@: %d", message, (int)status);
+        }
+        if(fatal)exit(-1);
+    }
 }
 
 @end
