@@ -22,11 +22,22 @@ OSStatus playCallback(void                            *inRefCon,
                       AudioBufferList                 *ioData){
     
     AudioUnitPlayer* this = (__bridge AudioUnitPlayer *)inRefCon;
-    UInt32 *frameBuffer = ioData->mBuffers[0].mData;
-    UInt32 count=inNumberFrames;
-    for (int j = 0; j < count; j++){
-        frameBuffer[j] = [this->inMemoryAudioFile getNextPacket:this->loop];
+    
+    for (int i=0; i < ioData->mNumberBuffers; i++)
+    {
+        AudioBuffer buffer = ioData->mBuffers[i];
+        UInt32 *frameBuffer = buffer.mData;
+        for (int index = 0; index < inNumberFrames; index++)
+        {
+            frameBuffer[index] = [this->inMemoryAudioFile getNextPacket:this->loop];
+        }
     }
+    
+//    UInt32 *frameBuffer = ioData->mBuffers[0].mData;
+//    UInt32 count=inNumberFrames;
+//    for (int j = 0; j < count; j++){
+//        frameBuffer[j] = [this->inMemoryAudioFile getNextPacket:this->loop];
+//    }
     
     return noErr;
 }

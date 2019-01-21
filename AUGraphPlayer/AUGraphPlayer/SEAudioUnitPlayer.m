@@ -39,12 +39,13 @@ OSStatus renderCallback(void                            *inRefCon,
                       UInt32                          inBusNumber,
                       UInt32                          inNumberFrames,
                       AudioBufferList                 *ioData){
-    printf("play::%u,",(unsigned int)inNumberFrames);
-    printf("play::%p,",ioData);
-    printf("play::%u,",(unsigned int)ioData->mNumberBuffers);
-    printf("inBusNumber::%u,",(unsigned int)inBusNumber);
-    SEAudioUnitPlayer* self = (SEAudioUnitPlayer *)CFBridgingRelease(inRefCon);
+//    printf("play::%u,",(unsigned int)inNumberFrames);
+////    printf("play::%p,",ioData);
+//    printf("play::%u,",(unsigned int)ioData->mNumberBuffers);
+//    printf("inBusNumber::%u,",(unsigned int)inBusNumber);
     
+    SEAudioUnitPlayer* self = (__bridge SEAudioUnitPlayer *)inRefCon;
+
     for (int i=0; i < ioData->mNumberBuffers; i++)
     {
         AudioBuffer buffer = ioData->mBuffers[i];
