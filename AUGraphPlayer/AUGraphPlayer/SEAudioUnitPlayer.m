@@ -9,11 +9,11 @@
 #import "SEAudioUnitPlayer.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVFoundation.h>
-
+#import "SEAVAudioSession.h"
 
 @interface SEAudioUnitPlayer()
 {
-    AVAudioSession * _session;//音频硬件环境
+    SEAVAudioSession * _session;//音频硬件环境
     NSString * _path;//资源路径
     
     AudioUnit   _PlayerUnit;
@@ -27,11 +27,62 @@
     UInt32 _durating;
     
 //    Float64 _sampleRate;//当前设备的采样率
-
+    
+    AudioConverterRef _converter;
+    
+    AudioStreamBasicDescription _sourceFormat;
 }
+@property(nonatomic,weak)id<SEAudioPlayerDelegate>delegate;
 @end
 
 @implementation SEAudioUnitPlayer
+
+
+static AudioStreamBasicDescription PCMStreamDescription()
+{
+    //给AudioUnit设置参数
+    AudioStreamBasicDescription pcmStreamDesc;
+    UInt32 bytesPerSample = sizeof(SInt16);
+    bzero(&pcmStreamDesc, sizeof(pcmStreamDesc));
+    pcmStreamDesc.mFormatID          = kAudioFormatLinearPCM;//指定音频格式
+    //mFormatFlagsa表示格式：FloatPacked表示格式是float
+    //NonInterleaved表示音频存储的的AudioBufferList中的mBuffer[0]是左声道 mBuffer[1]是又声道 非交错存放
+    //如果使用Interleaved 左右声道数据交错存放在mBuffer[0]中
+    pcmStreamDesc.mFormatFlags       = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;//
+    pcmStreamDesc.mFramesPerPacket   = 1;
+    pcmStreamDesc.mChannelsPerFrame  = 2;// 通道为2 ->SInt16 ，     通道为1 ->UInt32               
+    // 2 indicates stereo
+    pcmStreamDesc.mBytesPerFrame     = bytesPerSample * pcmStreamDesc.mChannelsPerFrame ;
+    //mBitsPerChannel和mBytesPerPacket的赋值 需要看mFormatFlags 如果是NonInterleaved 就赋值 bytesPerSample
+    //如果是Interleaved 则需要bytesPerSample * Channels
+    pcmStreamDesc.mBitsPerChannel    = 8 * bytesPerSample;//一个声道的音频数据用多少位来表示 SInt16
+    pcmStreamDesc.mBytesPerPacket    = bytesPerSample * pcmStreamDesc.mChannelsPerFrame;
+    pcmStreamDesc.mSampleRate        = 44100;
+    return pcmStreamDesc;
+}
+
+
+OSStatus ConverterDataRenderCallback(AudioConverterRef inAudioConverter,UInt32 * ioNumberDataPackets,AudioBufferList *  ioData,AudioStreamPacketDescription * __nullable * __nullable outDataPacketDescription,void * __nullable inUserData)
+{
+    SEAudioUnitPlayer* self = (__bridge SEAudioUnitPlayer *)inUserData;
+    if (self->_readedPacketIndex >= self.paketsArray.count) {
+        NSLog(@"No Data");
+        return 'bxmo';
+    }
+    NSData *packet = self.paketsArray[self->_readedPacketIndex];
+    ioData->mNumberBuffers = 1;
+    ioData->mBuffers[0].mData = (void *)packet.bytes;
+    ioData->mBuffers[0].mDataByteSize = (UInt32)packet.length;
+    
+    static AudioStreamPacketDescription aspdesc;
+    aspdesc.mDataByteSize = (UInt32)packet.length;
+    aspdesc.mStartOffset = 0;
+    aspdesc.mVariableFramesInPacket = 1;
+    *outDataPacketDescription = &aspdesc;
+    self->_readedPacketIndex++;
+    return 0;
+}
+
 
 OSStatus renderCallback(void                            *inRefCon,
                       AudioUnitRenderActionFlags      *ioActionFlags,
@@ -46,16 +97,32 @@ OSStatus renderCallback(void                            *inRefCon,
     
     SEAudioUnitPlayer* self = (__bridge SEAudioUnitPlayer *)inRefCon;
 
-    for (int i=0; i < ioData->mNumberBuffers; i++)
-    {
-        AudioBuffer buffer = ioData->mBuffers[i];
-        UInt32 *frameBuffer = buffer.mData;
-        for (int index = 0; index < inNumberFrames; index++)
-        {
-            frameBuffer[index] = [self getNextPacket];
+    @synchronized (self) {
+        if (self->_packetIndex < self->_packetCount) {
+            
+            UInt32 packetSize = inNumberFrames;
+            OSStatus status = AudioConverterFillComplexBuffer(self->_converter, NULL, (__bridge void *)self, &packetSize, ioData, NULL);
+            
+            
+            for (int i=0; i < ioData->mNumberBuffers; i++)
+            {
+                AudioBuffer buffer = ioData->mBuffers[i];
+                UInt32 *frameBuffer = buffer.mData;
+                for (int index = 0; index < inNumberFrames; index++)
+                {
+                    frameBuffer[index] = [self getNextPacket];
+                }
+            }
+            NSInteger n = (self->_packetIndex/(float)(self->_packetCount)) * self->_durating;
+            if (self.delegate) {
+                [self.delegate didPlayingGetcurrentTime:n];
+            }
+        }else{
+            [self stop];
+            return  -1;
         }
     }
-    
+
     /*
      UInt32 sizeIn = sizeof(AudioStreamBasicDescription);
      AudioStreamBasicDescription audioFormatIn;
@@ -78,11 +145,15 @@ OSStatus renderCallback(void                            *inRefCon,
     return noErr;
 }
 
+-(void)seekPacketIndex:(UInt32)index{
+    _packetIndex = index;
+}
 
 //资源路径
-- (instancetype)initWithFilePath:(NSString *)path{
+- (instancetype)initWithFilePath:(NSString *)path delegete:(id)delegate{
     self = [super init];
     if (self) {
+        self.delegate = delegate;
         _path = path;
         _packetIndex = 0;
         [self setupAudioSession];
@@ -94,6 +165,7 @@ OSStatus renderCallback(void                            *inRefCon,
 
 -(void)readPacketsOffile:(NSString *)path{
     
+    [self getfileInfo:path];
     AudioFileID fileID = nil;
 
     CFURLRef audioFileUrl = (__bridge CFURLRef)[NSURL fileURLWithPath:path];
@@ -105,9 +177,14 @@ OSStatus renderCallback(void                            *inRefCon,
     result = AudioFileGetProperty(fileID, kAudioFilePropertyAudioDataPacketCount, &datasize, &_packetCount);
     SECheckStatus(result, @"获取音频镇失败 ...", YES);
     
-    UInt32 time = sizeof(UInt32);
-    result = AudioFileGetPropertyInfo(fileID, kAudioFilePropertyEstimatedDuration, &time, &_durating);
-    SECheckStatus(result, @"获取时间失败 ...", YES);
+    AudioStreamBasicDescription format;
+    UInt32 formatDatasize = sizeof(AudioStreamBasicDescription);
+    result = AudioFileGetProperty(fileID, kAudioFilePropertyDataFormat, &formatDatasize, &format);
+    SECheckStatus(result, @"获取音频镇失败 ...", YES);
+    _sourceFormat = format;
+//    UInt32 time = sizeof(UInt32);
+//    result = AudioFileGetPropertyInfo(fileID, kAudioFilePropertyEstimatedDuration, &time, &_durating);
+//    SECheckStatus(result, @"获取时间失败 ...", YES);
     
 
     NSDictionary*piDict =nil;
@@ -148,32 +225,24 @@ OSStatus renderCallback(void                            *inRefCon,
     
 }
 
+-(void)getfileInfo:(NSString *)fileUrl{
+    AVURLAsset* audioAsset =[AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:fileUrl] options:nil];
+    //时间
+    CMTime duration= audioAsset.duration;
+    int seconds =(int)CMTimeGetSeconds(duration);//总时间
+    self->_durating =  seconds;
+    if (self.delegate) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate didGetFileInfo:@{@"duration":[NSString stringWithFormat:@"%d", seconds]}];
+        });
+    }
+}
+
 //配置音频硬件环境
 -(void)setupAudioSession{
-    _session = [AVAudioSession sharedInstance];
-    NSError *error = nil;
-    if (![_session setCategory:AVAudioSessionCategoryPlayback
-                   withOptions:AVAudioSessionCategoryOptionMixWithOthers
-                         error:&error]) {
-        NSLog(@" set category failed on audio session ! :%@",error.localizedDescription);
-    }
-    
-    //设置参照采样率
-    if (![_session setPreferredSampleRate:44100 error:&error]) {
-        NSLog(@"error when setPreferredSampleRate on audio session :%@ ",error.localizedDescription);
-    }
-    
-    //设置延迟
-    Float32 ioBufferDuration = .005;
-    if (![_session setPreferredIOBufferDuration:ioBufferDuration error:&error]) {
-        NSLog(@"error when setPreferredSampleRate on audio session :%@ ",error.localizedDescription);
-    }
-    
-    //激活会话
-    if (![_session setActive:YES error:&error]) {
-        NSLog(@"error when setActive on audio session :%@ ",error.localizedDescription);
-    }
-    
+    _session = [SEAVAudioSession new];
+    [_session setActive:YES];
+
     //监听RouteChange事件
     [[NSNotificationCenter defaultCenter] addObserver:self     
                                              selector:@selector(onNotificationAudioRouteChange:)
@@ -188,6 +257,8 @@ OSStatus renderCallback(void                            *inRefCon,
 
 -(void)setupAudioUnitInfo{
     
+
+    
     AudioComponentDescription outputUinitDesc;
     bzero(&outputUinitDesc, sizeof(outputUinitDesc));
     outputUinitDesc.componentManufacturer = kAudioUnitManufacturer_Apple;
@@ -200,23 +271,10 @@ OSStatus renderCallback(void                            *inRefCon,
     SECheckStatus(status, @"set Player Unit faile...", YES);
     
     //给AudioUnit设置参数
-    AudioStreamBasicDescription pcmStreamDesc;
-    UInt32 bytesPerSample = sizeof(SInt16);
-    bzero(&pcmStreamDesc, sizeof(pcmStreamDesc));
-    pcmStreamDesc.mFormatID          = kAudioFormatLinearPCM;//指定音频格式
-    //mFormatFlagsa表示格式：FloatPacked表示格式是float
-    //NonInterleaved表示音频存储的的AudioBufferList中的mBuffer[0]是左声道 mBuffer[1]是又声道 非交错存放
-    //如果使用Interleaved 左右声道数据交错存放在mBuffer[0]中
-    pcmStreamDesc.mFormatFlags       = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;//
-    pcmStreamDesc.mFramesPerPacket   = 1;
-    pcmStreamDesc.mChannelsPerFrame  = 2;                   
-    // 2 indicates stereo
-    pcmStreamDesc.mBytesPerFrame     = bytesPerSample * pcmStreamDesc.mChannelsPerFrame ;
-    //mBitsPerChannel和mBytesPerPacket的赋值 需要看mFormatFlags 如果是NonInterleaved 就赋值 bytesPerSample
-    //如果是Interleaved 则需要bytesPerSample * Channels
-    pcmStreamDesc.mBitsPerChannel    = 8 * bytesPerSample;//一个声道的音频数据用多少位来表示 SInt16
-    pcmStreamDesc.mBytesPerPacket    = bytesPerSample * pcmStreamDesc.mChannelsPerFrame;
-    pcmStreamDesc.mSampleRate        = 44100;
+    AudioStreamBasicDescription pcmStreamDesc = PCMStreamDescription();
+    status = AudioConverterNew(&self->_sourceFormat, &pcmStreamDesc, &self->_converter);
+    SECheckStatus(status, @"create converter failed...", YES);
+
     status = AudioUnitSetProperty(_PlayerUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &pcmStreamDesc, sizeof(pcmStreamDesc));  
     SECheckStatus(status, @"set Player Unit StreamFormat faile...", YES);
 
@@ -271,6 +329,10 @@ OSStatus renderCallback(void                            *inRefCon,
         _packetIndex = 0;
     }
     returnValue = _audioData[_packetIndex++];
+//    NSLog(@"...%llu", self->_packetIndex/self->_packetCount );
+//    if (self.delegate) {
+////        [self.delegate didPlayingGetcurrentTime:self->_packetIndex/self->_packetIndex * self->_durating];
+//    }
     return returnValue;
 }
 
@@ -284,6 +346,7 @@ OSStatus renderCallback(void                            *inRefCon,
 
 #pragma -mark播放
 -(void)play{
+    NSLog(@"******%d", _packetIndex);
     OSStatus status = AudioOutputUnitStart(_PlayerUnit);
     assert(status == noErr);
 }
@@ -292,6 +355,8 @@ OSStatus renderCallback(void                            *inRefCon,
 -(void)pause{
     OSStatus status = AudioOutputUnitStop(_PlayerUnit);
     assert(status == noErr);
+    NSLog(@"&&&&%d", _packetIndex);
+    _packetIndex = 10000000;
 }
 
 void SECheckStatus(OSStatus status, NSString * message, BOOL fatal){
@@ -307,6 +372,10 @@ void SECheckStatus(OSStatus status, NSString * message, BOOL fatal){
         }
         if(fatal)exit(-1);
     }
+}
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

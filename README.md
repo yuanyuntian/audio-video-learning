@@ -15,8 +15,8 @@
             
             
             
-1 利用AUGraph播放本地mp3文件(参考项目AUGraphPlayer)
-        
+1 利用AudioUnit播放本地pcm文件(参考项目AUGraphPlayer)
+2 实现播放暂停功能，获取文件信息      
 
         
         

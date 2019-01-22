@@ -7,17 +7,18 @@
 //
 
 #import "ViewController.h"
-#import "AUGraphPlayer.h"
+
 #import "SEAudioUnitPlayer.h"
 
 #import "AudioUnitPlayer.h"
 @interface ViewController ()
 {
-    AUGraphPlayer * _player;
-    
     SEAudioUnitPlayer * _unitPlayer;
     
     AudioUnitPlayer * _testPlayer;
+    __weak IBOutlet UILabel *timeL;
+    __weak IBOutlet UILabel *currenttime;
+    __weak IBOutlet UISlider *slide;
 }
 @end
 
@@ -26,13 +27,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    NSString* filePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"test2.wav"];
+    NSString* filePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"可惜没如果.wav"];
 
 //    _player = [[AUGraphPlayer alloc] initWithFilePath:filePath];
-    _unitPlayer = [[SEAudioUnitPlayer alloc] initWithFilePath:filePath];
+    _unitPlayer = [[SEAudioUnitPlayer alloc] initWithFilePath:filePath delegete:self];
     
 //    _testPlayer = [[AudioUnitPlayer alloc] init];
 //    [_testPlayer open:filePath];
+}
+
+- (IBAction)seekAction:(id)sender {
+    UISlider * s = (UISlider*)sender;
+    [_unitPlayer seekPacketIndex:s.value];
 }
 
 - (IBAction)startAction:(id)sender {
@@ -46,6 +52,20 @@
 }
 - (IBAction)stopAction:(id)sender {
     [_unitPlayer stop];
+}
+
+-(void)didPlayingGetcurrentTime:(NSInteger)seconds{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self->currenttime.text = [NSString stringWithFormat:@"%ld", (long)seconds];
+//        self->slide.value = seconds;
+    });
+}
+
+-(void)didGetFileInfo:(NSDictionary *)info{
+    NSString * timeStr = info[@"duration"];
+    timeL.text = timeStr;
+    slide.maximumValue = [timeStr integerValue];
+    slide.minimumValue = 0;
 }
 
 @end
