@@ -31,6 +31,8 @@
     AudioConverterRef _converter;
     
     AudioStreamBasicDescription _sourceFormat;
+    
+    AudioStreamPacketDescription * _outPacketDescriptions;
 }
 @property(nonatomic,weak)id<SEAudioPlayerDelegate>delegate;
 @end
@@ -65,21 +67,26 @@ static AudioStreamBasicDescription PCMStreamDescription()
 OSStatus ConverterDataRenderCallback(AudioConverterRef inAudioConverter,UInt32 * ioNumberDataPackets,AudioBufferList *  ioData,AudioStreamPacketDescription * __nullable * __nullable outDataPacketDescription,void * __nullable inUserData)
 {
     SEAudioUnitPlayer* self = (__bridge SEAudioUnitPlayer *)inUserData;
-    if (self->_readedPacketIndex >= self.paketsArray.count) {
+    if (self->_packetIndex >= self->_packetCount) {
         NSLog(@"No Data");
         return 'bxmo';
     }
-    NSData *packet = self.paketsArray[self->_readedPacketIndex];
-    ioData->mNumberBuffers = 1;
-    ioData->mBuffers[0].mData = (void *)packet.bytes;
-    ioData->mBuffers[0].mDataByteSize = (UInt32)packet.length;
     
-    static AudioStreamPacketDescription aspdesc;
-    aspdesc.mDataByteSize = (UInt32)packet.length;
-    aspdesc.mStartOffset = 0;
-    aspdesc.mVariableFramesInPacket = 1;
-    *outDataPacketDescription = &aspdesc;
-    self->_readedPacketIndex++;
+    for (int i=0; i < ioData->mNumberBuffers; i++)
+    {
+        AudioBuffer buffer = ioData->mBuffers[i];
+        UInt32 *frameBuffer = buffer.mData;
+        for (int index = 0; index < *ioNumberDataPackets; index++)
+        {
+            frameBuffer[index] = [self getNextPacket];
+        }
+    }
+//    static AudioStreamPacketDescription aspdesc;
+//    aspdesc.mDataByteSize = (UInt32)packet.length;
+//    aspdesc.mStartOffset = 0;
+//    aspdesc.mVariableFramesInPacket = 1;
+    *outDataPacketDescription = self->_outPacketDescriptions;
+//    self->_readedPacketIndex++;
     return 0;
 }
 
@@ -101,8 +108,17 @@ OSStatus renderCallback(void                            *inRefCon,
         if (self->_packetIndex < self->_packetCount) {
             
             UInt32 packetSize = inNumberFrames;
-            OSStatus status = AudioConverterFillComplexBuffer(self->_converter, NULL, (__bridge void *)self, &packetSize, ioData, NULL);
+//            OSStatus status = AudioConverterFillComplexBuffer(self->_converter, ConverterDataRenderCallback, (__bridge void *)self, &packetSize, ioData, NULL);
             
+            
+            /*
+            AudioBuffer buffer = ioData->mBuffers[0];
+            UInt32 *frameBuffer = buffer.mData;
+            for (int index = 0; index < inNumberFrames; index++){
+
+                frameBuffer[index] = [self getNextPacket];
+            }
+             */
             
             for (int i=0; i < ioData->mNumberBuffers; i++)
             {
@@ -212,7 +228,7 @@ OSStatus renderCallback(void                            *inRefCon,
         result =AudioFileReadPacketData(fileID, false, &numBytesRead, outPacketDescriptions, 0, &packetRead, _audioData);
 //         result = AudioFileReadPackets(fileID, false, &numBytesRead, NULL, 0, &packetRead, _audioData);
         SECheckStatus(result, @"ReadPacketData faile...", YES);
-        
+        _outPacketDescriptions = outPacketDescriptions;
         //print out general info about  the file
         NSLog(@"Packets read from file: %u\n", (unsigned int)packetRead);
         NSLog(@"Bytes read from file: %u\n", (unsigned int)numBytesRead);
@@ -260,7 +276,9 @@ OSStatus renderCallback(void                            *inRefCon,
 
     
     AudioComponentDescription outputUinitDesc;
-    bzero(&outputUinitDesc, sizeof(outputUinitDesc));
+    memset(&outputUinitDesc, 0, sizeof(AudioComponentDescription));
+
+//    bzero(&outputUinitDesc, sizeof(AudioComponentDescription));
     outputUinitDesc.componentManufacturer = kAudioUnitManufacturer_Apple;
     outputUinitDesc.componentType = kAudioUnitType_Output;
     outputUinitDesc.componentSubType = kAudioUnitSubType_RemoteIO;
