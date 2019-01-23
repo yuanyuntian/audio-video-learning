@@ -27,7 +27,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    NSString* filePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"遇见.mp3"];
+    NSString* filePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"可惜没如果.wav"];
 
 //    _player = [[AUGraphPlayer alloc] initWithFilePath:filePath];
     _unitPlayer = [[SEAudioUnitPlayer alloc] initWithFilePath:filePath delegete:self];
