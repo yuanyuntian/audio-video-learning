@@ -17,8 +17,6 @@
 		B86187FB21F05900006435E6 /* AUGraphPlayerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = B86187FA21F05900006435E6 /* AUGraphPlayerUITests.m */; };
 		B861880C21F090E1006435E6 /* 遇见.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B861880B21F090E1006435E6 /* 遇见.mp3 */; };
 		B861881121F0AE80006435E6 /* SEAudioUnitPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B861881021F0AE80006435E6 /* SEAudioUnitPlayer.m */; };
-		B861881921F5A976006435E6 /* AudioUnitPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B861881821F5A976006435E6 /* AudioUnitPlayer.m */; };
-		B861881C21F5A97E006435E6 /* InMemoryAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = B861881A21F5A97E006435E6 /* InMemoryAudioFile.m */; };
 		B861882421F6B423006435E6 /* SEAVAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = B861882321F6B423006435E6 /* SEAVAudioSession.m */; };
 		B861882621F711F6006435E6 /* 可惜没如果.wav in Resources */ = {isa = PBXBuildFile; fileRef = B861882521F711F5006435E6 /* 可惜没如果.wav */; };
 /* End PBXBuildFile section */
@@ -60,10 +58,6 @@
 		B861880B21F090E1006435E6 /* 遇见.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "遇见.mp3"; sourceTree = "<group>"; };
 		B861880F21F0AE80006435E6 /* SEAudioUnitPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SEAudioUnitPlayer.h; sourceTree = "<group>"; };
 		B861881021F0AE80006435E6 /* SEAudioUnitPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SEAudioUnitPlayer.m; sourceTree = "<group>"; };
-		B861881721F5A96F006435E6 /* AudioUnitPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioUnitPlayer.h; sourceTree = "<group>"; };
-		B861881821F5A976006435E6 /* AudioUnitPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioUnitPlayer.m; sourceTree = "<group>"; };
-		B861881A21F5A97E006435E6 /* InMemoryAudioFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InMemoryAudioFile.m; sourceTree = "<group>"; };
-		B861881B21F5A97E006435E6 /* InMemoryAudioFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InMemoryAudioFile.h; sourceTree = "<group>"; };
 		B861882221F6B423006435E6 /* SEAVAudioSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SEAVAudioSession.h; sourceTree = "<group>"; };
 		B861882321F6B423006435E6 /* SEAVAudioSession.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SEAVAudioSession.m; sourceTree = "<group>"; };
 		B861882521F711F5006435E6 /* 可惜没如果.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "可惜没如果.wav"; sourceTree = "<group>"; };
@@ -118,10 +112,6 @@
 			isa = PBXGroup;
 			children = (
 				B861882521F711F5006435E6 /* 可惜没如果.wav */,
-				B861881B21F5A97E006435E6 /* InMemoryAudioFile.h */,
-				B861881A21F5A97E006435E6 /* InMemoryAudioFile.m */,
-				B861881821F5A976006435E6 /* AudioUnitPlayer.m */,
-				B861881721F5A96F006435E6 /* AudioUnitPlayer.h */,
 				B861880B21F090E1006435E6 /* 遇见.mp3 */,
 				B86187D621F058FE006435E6 /* AppDelegate.h */,
 				B86187D721F058FE006435E6 /* AppDelegate.m */,
@@ -291,9 +281,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B861881121F0AE80006435E6 /* SEAudioUnitPlayer.m in Sources */,
-				B861881C21F5A97E006435E6 /* InMemoryAudioFile.m in Sources */,
 				B861882421F6B423006435E6 /* SEAVAudioSession.m in Sources */,
-				B861881921F5A976006435E6 /* AudioUnitPlayer.m in Sources */,
 				B86187DB21F058FE006435E6 /* ViewController.m in Sources */,
 				B86187E621F05900006435E6 /* main.m in Sources */,
 				B86187D821F058FE006435E6 /* AppDelegate.m in Sources */,

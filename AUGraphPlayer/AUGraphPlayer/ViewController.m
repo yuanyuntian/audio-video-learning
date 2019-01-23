@@ -10,12 +10,10 @@
 
 #import "SEAudioUnitPlayer.h"
 
-#import "AudioUnitPlayer.h"
 @interface ViewController ()
 {
     SEAudioUnitPlayer * _unitPlayer;
     
-    AudioUnitPlayer * _testPlayer;
     __weak IBOutlet UILabel *timeL;
     __weak IBOutlet UILabel *currenttime;
     __weak IBOutlet UISlider *slide;

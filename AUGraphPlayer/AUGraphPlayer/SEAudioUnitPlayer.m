@@ -79,7 +79,23 @@ OSStatus ConverterDataRenderCallback(AudioConverterRef inAudioConverter,UInt32 *
         NSLog(@"No Data");
         return 'bxmo';
     }
-    
+
+//    AudioBuffer buffer = ioData->mBuffers[0];
+//    buffer.mData = (uint8_t *)malloc(sizeof(uint8_t)**ioNumberDataPackets);
+//    UInt32 *frameBuffer = buffer.mData;
+//    for (int index = 0; index < *ioNumberDataPackets; index++){
+//        NSData * packet = self->_packetsArray[self-> _packetIndex];
+//        frameBuffer[index] = *(UInt32*)(packet.bytes);
+//
+//        static AudioStreamPacketDescription aspdesc;
+//        aspdesc.mDataByteSize = (UInt32)packet.length;
+//        aspdesc.mStartOffset = 0;
+//        aspdesc.mVariableFramesInPacket = 1;
+//        outDataPacketDescription[index] = &aspdesc;
+//        self->_packetIndex++;
+//    }
+ 
+//
     NSData * packet = self->_packetsArray[self-> _packetIndex];
     ioData->mNumberBuffers = 1;
     ioData->mBuffers[0].mData = (void *)packet.bytes;
@@ -94,13 +110,13 @@ OSStatus ConverterDataRenderCallback(AudioConverterRef inAudioConverter,UInt32 *
 //            frameBuffer[index] = [self getNextPacket];
 //        }
 //    }
-    
+//
     static AudioStreamPacketDescription aspdesc;
     aspdesc.mDataByteSize = (UInt32)packet.length;
     aspdesc.mStartOffset = 0;
     aspdesc.mVariableFramesInPacket = 1;
     *outDataPacketDescription = &aspdesc;
-    self->_packetIndex++;
+    self->_packetIndex += *ioNumberDataPackets;
     return 0;
 }
 
@@ -140,21 +156,13 @@ OSStatus renderCallback(void                            *inRefCon,
                     }
                 }else{
                     
-//                    AudioBuffer buffer = ioData->mBuffers[0];
-//                    UInt32 *frameBuffer = buffer.mData;
-//                    for (int index = 0; index < inNumberFrames; index++){
-//                        NSData * packet = self->_packetsArray[self-> _packetIndex];
-//                        frameBuffer[index] = packet.bytes;
-//                         self->_packetIndex++;
-//                    }
-                    
-                    
-                    NSData * packet = self->_packetsArray[self-> _packetIndex];
-                    ioData->mNumberBuffers = 1;
-                    ioData->mBuffers[0].mData = (void *)packet.bytes;
-                    ioData ->mBuffers[0].mNumberChannels = 1;
-                    ioData->mBuffers[0].mDataByteSize = (UInt32)packet.length;
-                    self->_packetIndex++;
+                    AudioBuffer buffer = ioData->mBuffers[0];
+                    UInt32 *frameBuffer = buffer.mData;
+                    for (int index = 0; index < inNumberFrames; index++){
+                        NSData * packet = self->_packetsArray[self-> _packetIndex];
+                        frameBuffer[index] = *(UInt32*)(packet.bytes);
+                         self->_packetIndex++;
+                    }
                 }
             }
 //            UInt32 packetSize = inNumberFrames;
@@ -290,6 +298,17 @@ void SEAudioFileStreamPropertyListenerCallback(void *    inClientData,
             AudioStreamBasicDescription destFormat = PCMStreamDescription();
             OSStatus status = AudioConverterNew(&self->_sourceFormat, &destFormat, &self->_converter);
             assert(status == noErr);
+            
+            UInt32 value = 0;
+            UInt32 size = sizeof(value);
+            AudioConverterGetProperty(self->_converter, kAudioConverterPropertyMaximumOutputPacketSize, &size, &value);
+            
+            self->_renderBufferList = (AudioBufferList *)malloc(sizeof(AudioBufferList));
+            self->_renderBufferList->mNumberBuffers = 1;
+            self->_renderBufferList->mBuffers[0].mNumberChannels = 2;
+            self->_renderBufferList->mBuffers[0].mData = calloc(1, 2048);//(void *)malloc(size);//calloc(1, 2048);
+            self->_renderBufferList->mBuffers[0].mDataByteSize = 2048;
+            
         }else{
             
         }
@@ -493,11 +512,11 @@ void SEAudioFileStreamParsePacketsCallback(void *inClientData,
     AudioUnitSetProperty(_PlayerUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0, &renderStruct, sizeof(renderStruct));
     AudioUnitInitialize(_PlayerUnit);
     
-    _renderBufferList = (AudioBufferList *)malloc(sizeof(AudioBufferList));
-    _renderBufferList->mNumberBuffers = 1;
-    _renderBufferList->mBuffers[0].mNumberChannels = 2;
-    _renderBufferList->mBuffers[0].mData = calloc(1, 2048);
-    _renderBufferList->mBuffers[0].mDataByteSize = 2048;
+//    _renderBufferList = (AudioBufferList *)malloc(sizeof(AudioBufferList));
+//    _renderBufferList->mNumberBuffers = 1;
+//    _renderBufferList->mBuffers[0].mNumberChannels = 2;
+//    _renderBufferList->mBuffers[0].mData = calloc(1, 2048);
+//    _renderBufferList->mBuffers[0].mDataByteSize = 2048;
 }
 
 #pragma mark ——— notification observer
