@@ -39,7 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B86187D321F058FE006435E6 /* AUGraphPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AUGraphPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B86187D321F058FE006435E6 /* SEAudioUnitPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SEAudioUnitPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B86187D621F058FE006435E6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B86187D721F058FE006435E6 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B86187D921F058FE006435E6 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
@@ -49,10 +49,10 @@
 		B86187E221F05900006435E6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B86187E421F05900006435E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B86187E521F05900006435E6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		B86187EB21F05900006435E6 /* AUGraphPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AUGraphPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B86187EB21F05900006435E6 /* SEAudioUnitPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SEAudioUnitPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B86187EF21F05900006435E6 /* AUGraphPlayerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUGraphPlayerTests.m; sourceTree = "<group>"; };
 		B86187F121F05900006435E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B86187F621F05900006435E6 /* AUGraphPlayerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AUGraphPlayerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B86187F621F05900006435E6 /* SEAudioUnitPlayerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SEAudioUnitPlayerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B86187FA21F05900006435E6 /* AUGraphPlayerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AUGraphPlayerUITests.m; sourceTree = "<group>"; };
 		B86187FC21F05900006435E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B861880B21F090E1006435E6 /* 遇见.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "遇见.mp3"; sourceTree = "<group>"; };
@@ -91,7 +91,7 @@
 		B86187CA21F058FE006435E6 = {
 			isa = PBXGroup;
 			children = (
-				B86187D521F058FE006435E6 /* AUGraphPlayer */,
+				B86187D521F058FE006435E6 /* SEAudioUnitPlayer */,
 				B86187EE21F05900006435E6 /* AUGraphPlayerTests */,
 				B86187F921F05900006435E6 /* AUGraphPlayerUITests */,
 				B86187D421F058FE006435E6 /* Products */,
@@ -101,14 +101,14 @@
 		B86187D421F058FE006435E6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B86187D321F058FE006435E6 /* AUGraphPlayer.app */,
-				B86187EB21F05900006435E6 /* AUGraphPlayerTests.xctest */,
-				B86187F621F05900006435E6 /* AUGraphPlayerUITests.xctest */,
+				B86187D321F058FE006435E6 /* SEAudioUnitPlayer.app */,
+				B86187EB21F05900006435E6 /* SEAudioUnitPlayerTests.xctest */,
+				B86187F621F05900006435E6 /* SEAudioUnitPlayerUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B86187D521F058FE006435E6 /* AUGraphPlayer */ = {
+		B86187D521F058FE006435E6 /* SEAudioUnitPlayer */ = {
 			isa = PBXGroup;
 			children = (
 				B861882521F711F5006435E6 /* 可惜没如果.wav */,
@@ -127,7 +127,7 @@
 				B861882221F6B423006435E6 /* SEAVAudioSession.h */,
 				B861882321F6B423006435E6 /* SEAVAudioSession.m */,
 			);
-			path = AUGraphPlayer;
+			path = SEAudioUnitPlayer;
 			sourceTree = "<group>";
 		};
 		B86187EE21F05900006435E6 /* AUGraphPlayerTests */ = {
@@ -151,9 +151,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B86187D221F058FE006435E6 /* AUGraphPlayer */ = {
+		B86187D221F058FE006435E6 /* SEAudioUnitPlayer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B86187FF21F05900006435E6 /* Build configuration list for PBXNativeTarget "AUGraphPlayer" */;
+			buildConfigurationList = B86187FF21F05900006435E6 /* Build configuration list for PBXNativeTarget "SEAudioUnitPlayer" */;
 			buildPhases = (
 				B86187CF21F058FE006435E6 /* Sources */,
 				B86187D021F058FE006435E6 /* Frameworks */,
@@ -163,14 +163,14 @@
 			);
 			dependencies = (
 			);
-			name = AUGraphPlayer;
+			name = SEAudioUnitPlayer;
 			productName = AUGraphPlayer;
-			productReference = B86187D321F058FE006435E6 /* AUGraphPlayer.app */;
+			productReference = B86187D321F058FE006435E6 /* SEAudioUnitPlayer.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B86187EA21F05900006435E6 /* AUGraphPlayerTests */ = {
+		B86187EA21F05900006435E6 /* SEAudioUnitPlayerTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B861880221F05900006435E6 /* Build configuration list for PBXNativeTarget "AUGraphPlayerTests" */;
+			buildConfigurationList = B861880221F05900006435E6 /* Build configuration list for PBXNativeTarget "SEAudioUnitPlayerTests" */;
 			buildPhases = (
 				B86187E721F05900006435E6 /* Sources */,
 				B86187E821F05900006435E6 /* Frameworks */,
@@ -181,14 +181,14 @@
 			dependencies = (
 				B86187ED21F05900006435E6 /* PBXTargetDependency */,
 			);
-			name = AUGraphPlayerTests;
+			name = SEAudioUnitPlayerTests;
 			productName = AUGraphPlayerTests;
-			productReference = B86187EB21F05900006435E6 /* AUGraphPlayerTests.xctest */;
+			productReference = B86187EB21F05900006435E6 /* SEAudioUnitPlayerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B86187F521F05900006435E6 /* AUGraphPlayerUITests */ = {
+		B86187F521F05900006435E6 /* SEAudioUnitPlayerUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B861880521F05900006435E6 /* Build configuration list for PBXNativeTarget "AUGraphPlayerUITests" */;
+			buildConfigurationList = B861880521F05900006435E6 /* Build configuration list for PBXNativeTarget "SEAudioUnitPlayerUITests" */;
 			buildPhases = (
 				B86187F221F05900006435E6 /* Sources */,
 				B86187F321F05900006435E6 /* Frameworks */,
@@ -199,9 +199,9 @@
 			dependencies = (
 				B86187F821F05900006435E6 /* PBXTargetDependency */,
 			);
-			name = AUGraphPlayerUITests;
+			name = SEAudioUnitPlayerUITests;
 			productName = AUGraphPlayerUITests;
-			productReference = B86187F621F05900006435E6 /* AUGraphPlayerUITests.xctest */;
+			productReference = B86187F621F05900006435E6 /* SEAudioUnitPlayerUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -226,7 +226,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B86187CE21F058FE006435E6 /* Build configuration list for PBXProject "AUGraphPlayer" */;
+			buildConfigurationList = B86187CE21F058FE006435E6 /* Build configuration list for PBXProject "SEAudioUnitPlayer" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -239,9 +239,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B86187D221F058FE006435E6 /* AUGraphPlayer */,
-				B86187EA21F05900006435E6 /* AUGraphPlayerTests */,
-				B86187F521F05900006435E6 /* AUGraphPlayerUITests */,
+				B86187D221F058FE006435E6 /* SEAudioUnitPlayer */,
+				B86187EA21F05900006435E6 /* SEAudioUnitPlayerTests */,
+				B86187F521F05900006435E6 /* SEAudioUnitPlayerUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -309,12 +309,12 @@
 /* Begin PBXTargetDependency section */
 		B86187ED21F05900006435E6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B86187D221F058FE006435E6 /* AUGraphPlayer */;
+			target = B86187D221F058FE006435E6 /* SEAudioUnitPlayer */;
 			targetProxy = B86187EC21F05900006435E6 /* PBXContainerItemProxy */;
 		};
 		B86187F821F05900006435E6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B86187D221F058FE006435E6 /* AUGraphPlayer */;
+			target = B86187D221F058FE006435E6 /* SEAudioUnitPlayer */;
 			targetProxy = B86187F721F05900006435E6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -502,7 +502,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.yuanf.AUGraphPlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AUGraphPlayer.app/AUGraphPlayer";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SEAudioUnitPlayer.app/SEAudioUnitPlayer";
 			};
 			name = Debug;
 		};
@@ -521,7 +521,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.yuanf.AUGraphPlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AUGraphPlayer.app/AUGraphPlayer";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SEAudioUnitPlayer.app/SEAudioUnitPlayer";
 			};
 			name = Release;
 		};
@@ -564,7 +564,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B86187CE21F058FE006435E6 /* Build configuration list for PBXProject "AUGraphPlayer" */ = {
+		B86187CE21F058FE006435E6 /* Build configuration list for PBXProject "SEAudioUnitPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B86187FD21F05900006435E6 /* Debug */,
@@ -573,7 +573,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B86187FF21F05900006435E6 /* Build configuration list for PBXNativeTarget "AUGraphPlayer" */ = {
+		B86187FF21F05900006435E6 /* Build configuration list for PBXNativeTarget "SEAudioUnitPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B861880021F05900006435E6 /* Debug */,
@@ -582,7 +582,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B861880221F05900006435E6 /* Build configuration list for PBXNativeTarget "AUGraphPlayerTests" */ = {
+		B861880221F05900006435E6 /* Build configuration list for PBXNativeTarget "SEAudioUnitPlayerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B861880321F05900006435E6 /* Debug */,
@@ -591,7 +591,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B861880521F05900006435E6 /* Build configuration list for PBXNativeTarget "AUGraphPlayerUITests" */ = {
+		B861880521F05900006435E6 /* Build configuration list for PBXNativeTarget "SEAudioUnitPlayerUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B861880621F05900006435E6 /* Debug */,

@@ -42,28 +42,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "AUGraphPlayer/SEAudioUnitPlayer.m"
-            timestampString = "569844029.494661"
+            timestampString = "569986126.923849"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "156"
-            endingLineNumber = "156"
-            landmarkName = "-readPacketsOffile:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AUGraphPlayer/SEAudioUnitPlayer.m"
-            timestampString = "569844029.495175"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
-            landmarkName = "renderCallback"
+            startingLineNumber = "261"
+            endingLineNumber = "261"
+            landmarkName = "SEAudioFileStreamPropertyListenerCallback"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
