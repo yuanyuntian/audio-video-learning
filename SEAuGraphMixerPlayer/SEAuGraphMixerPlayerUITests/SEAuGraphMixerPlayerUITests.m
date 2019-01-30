@@ -1,18 +1,18 @@
 //
-//  SEAUGraphUITests.m
-//  SEAUGraphUITests
+//  SEAuGraphMixerPlayerUITests.m
+//  SEAuGraphMixerPlayerUITests
 //
-//  Created by yuan on 2019/1/24.
+//  Created by yuan on 2019/1/30.
 //  Copyright © 2019年 sunEEE. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
 
-@interface SEAUGraphUITests : XCTestCase
+@interface SEAuGraphMixerPlayerUITests : XCTestCase
 
 @end
 
-@implementation SEAUGraphUITests
+@implementation SEAuGraphMixerPlayerUITests
 
 - (void)setUp {
     // Put setup code here. This method is called before the invocation of each test method in the class.

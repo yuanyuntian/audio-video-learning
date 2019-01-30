@@ -1,8 +1,8 @@
 //
 //  AppDelegate.h
-//  SEAUGraph
+//  SEAuGraphMixerPlayer
 //
-//  Created by yuan on 2019/1/24.
+//  Created by yuan on 2019/1/30.
 //  Copyright © 2019年 sunEEE. All rights reserved.
 //
 

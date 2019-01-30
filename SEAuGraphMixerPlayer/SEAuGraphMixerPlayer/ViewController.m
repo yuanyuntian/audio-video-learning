@@ -7,6 +7,9 @@
 //
 
 #import "ViewController.h"
+#import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
+
 
 @interface ViewController ()
 
@@ -19,5 +22,15 @@
     // Do any additional setup after loading the view, typically from a nib.
 }
 
+- (IBAction)enableInput:(id)sender {
+    UISwitch * v = (UISwitch *)sender;
+    UInt32 inputNum = (UInt32)[v tag];
+    AudioUnitParameterValue value = v.isOn;
+}
+
+- (IBAction)setInputVolume:(id)sender {
+}
+- (IBAction)setOutputVolume:(id)sender {
+}
 
 @end
