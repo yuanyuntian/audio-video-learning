@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SEAuGraphMixerPlayer : NSObject
 
 
+@property(nonatomic, assign)BOOL isPlaying;
 //播放
 -(void)play;
 //停止

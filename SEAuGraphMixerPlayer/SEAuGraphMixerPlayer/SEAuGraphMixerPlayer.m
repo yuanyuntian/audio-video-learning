@@ -7,6 +7,7 @@
 //
 
 #import "SEAuGraphMixerPlayer.h"
+#import "SEAVAudioSession.h"
 
 const Float64 kGraphSampleRate = 44100.0; // 48000.0 optional tests
 #define MAXBUFS  2
@@ -26,7 +27,7 @@ typedef struct {
     AudioUnit _Mixer;
     AudioUnit _Output;
     
-    BOOL _isPlaying;
+    
     
     CFURLRef _sourceURL[2];
     
@@ -34,10 +35,67 @@ typedef struct {
     
     AVAudioFormat *mAudioFormat;
     
+    SEAVAudioSession * _session;//音频硬件环境
 }
 @end
 
 @implementation SEAuGraphMixerPlayer
+
+static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData){
+    SoundBufferPtr sndbuf = (SoundBufferPtr)inRefCon;
+    
+    UInt32 sample = sndbuf[inBusNumber].sampleNum;// frame number to start from
+    UInt32 bufSamples = sndbuf[inBusNumber].numFrames;// total number of frames in the sound buffer
+    Float32 * in = sndbuf[inBusNumber].data;    //audio data buffer
+    
+    Float32 * outA = (Float32 *)ioData->mBuffers[0].mData;// output audio buffer for L channel
+    Float32 *outB = (Float32 *)ioData->mBuffers[1].mData; // output audio buffer for R channel
+    
+    // for demonstration purposes we've configured 2 stereo input busses for the mixer unit
+    // but only provide a single channel of data from each input bus when asked and silence for the other channel
+    // alternating as appropriate when asked to render bus 0 or bus 1's input
+    
+    for (UInt32 i = 0; i < inBusNumber; ++i) {
+        if (inBusNumber == 1) {
+            outA[i] = 0;
+            outB[i] = in[sample++];
+        }else{
+            outA[i] = in[sample++];
+            outB[i] = 0;
+        }
+        
+        if (sample > bufSamples) {
+            // start over from the beginning of the data, our audio simply loops
+            printf("looping data for bus %d after %ld source frames rendered\n", (unsigned int)inBusNumber, (long)sample-1);
+            sample = 0;
+        }
+    }
+    sndbuf[inBusNumber].sampleNum = sample; // keep track of where we are in the source data buffer
+    return noErr;
+}
+
+-(instancetype)init{
+    if (self = [super init]) {
+        
+        _session = [SEAVAudioSession new];
+        [_session setActive:YES];
+        
+        
+        _isPlaying = false;
+        
+        // clear the mSoundBuffer struct
+        memset(&mSoundBuffer, 0, sizeof(mSoundBuffer));
+        
+        // create the URLs we'll use for source A and B
+        NSString *sourceA = [[NSBundle mainBundle] pathForResource:@"遇见" ofType:@"mp3"];
+        NSString *sourceB = [[NSBundle mainBundle] pathForResource:@"可惜没如果" ofType:@"wav"];
+        _sourceURL[0] = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)sourceA, kCFURLPOSIXPathStyle, false);
+        _sourceURL[1] = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)sourceB, kCFURLPOSIXPathStyle, false);
+        
+        [self initAUGraph];
+    }
+    return self;
+}
 
 -(void)initAUGraph{
     printf("initialize\n");
@@ -61,13 +119,96 @@ typedef struct {
     if (result) { printf("NewAUGraph result %ld %08lX %4.4s\n", (long)result, (long)result, (char*)&result); return; }
     
     // create two AudioComponentDescriptions for the AUs we want in the graph
+    //output unit
+    AudioComponentDescription output_desc;
+    bzero(&output_desc, sizeof(output_desc));
+    output_desc.componentManufacturer = kAudioUnitManufacturer_Apple;
+    output_desc.componentType = kAudioUnitType_Output;
+    output_desc.componentSubType = kAudioUnitSubType_RemoteIO;
+    output_desc.componentFlags = 0;
+    output_desc.componentFlagsMask = 0;
+    
+    // multichannel mixer unit
+    AudioComponentDescription mixer_desc;
+    bzero(&mixer_desc, sizeof(mixer_desc));
+    mixer_desc.componentManufacturer = kAudioUnitManufacturer_Apple;
+    mixer_desc.componentType = kAudioUnitType_Mixer;
+    mixer_desc.componentSubType = kAudioUnitSubType_MultiChannelMixer;
+    mixer_desc.componentFlags = 0;
+    mixer_desc.componentFlagsMask = 0;
+    
+    printf("new nodes\n");
+    // create a node in the graph that is an AudioUnit, using the supplied AudioComponentDescription to find and open that unit
+    result = AUGraphAddNode(_Graph, &output_desc, &outputNode);
+    if (result) { printf("AUGraphNewNode 1 result %ld %4.4s\n", (long)result, (char*)&result); return; }
+    
+    result = AUGraphAddNode(_Graph, &mixer_desc, &mixerNode );
+    if (result) { printf("AUGraphNewNode 2 result %ld %4.4s\n", (long)result, (char*)&result); return; }
+    
+    // connect a node's output to a node's input
+    result = AUGraphConnectNodeInput(_Graph, mixerNode, 0, outputNode, 0);
+    if (result) { printf("AUGraphConnectNodeInput result %ld %4.4s\n", (long)result, (char*)&result); return; }
+    
+    // open the graph AudioUnits are open but not initialized (no resource allocation occurs here)
+    result = AUGraphOpen(_Graph);
+    if (result) { printf("AUGraphOpen result %ld %08lX %4.4s\n", (long)result, (long)result, (char*)&result); return; }
+    
+    result = AUGraphNodeInfo(_Graph, mixerNode, NULL, &_Mixer);
+    if (result) { printf("AUGraphNodeInfo result %ld %08lX %4.4s\n", (long)result, (long)result, (char*)&result); return; }
+    
+    result = AUGraphNodeInfo(_Graph, outputNode, NULL, &_Output);
+    if (result) { printf("AUGraphNodeInfo result %ld %08lX %4.4s\n", (long)result, (long)result, (char*)&result); return; }
+    
+    // set bus count
+    UInt32 numbuses = 2;
+    
+    printf("set input bus count %u\n", (unsigned int)numbuses);
+    result = AudioUnitSetProperty(_Mixer, kAudioUnitProperty_ElementCount, kAudioUnitScope_Input, 0, &numbuses, sizeof(numbuses));
+    if (result) { printf("AudioUnitSetProperty result %ld %08lX %4.4s\n", (long)result, (long)result, (char*)&result); return; }
+    
+    
+    for (int  i = 0; i < numbuses; i++) {
+        // setup render callback struct
+        AURenderCallbackStruct rcbs;
+        rcbs.inputProc = &renderInput;
+        rcbs.inputProcRefCon = mSoundBuffer;
+        printf("set kAudioUnitProperty_SetRenderCallback for mixer input bus %d\n", i);
+        // Set a callback for the specified node's specified input
+        result = AUGraphSetNodeInputCallback(_Graph, mixerNode, i, &rcbs);
+        if (result) { printf("AUGraphSetNodeInputCallback result %ld %08lX %4.4s\n", (long)result, (long)result, (char*)&result); return; }
+        
+        // set input stream format to what we want
+        printf("set mixer input kAudioUnitProperty_StreamFormat for bus %d\n", i);
+        
+        result = AudioUnitSetProperty(_Mixer, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, i, mAudioFormat.streamDescription, sizeof(AudioStreamBasicDescription));
+        if (result) { 
+            printf("AudioUnitSetProperty result %ld %08lX %4.4s\n", (long)result, (long)result, (char*)&result); 
+            return; 
+        }
+    }
+    // set output stream format to what we want
+    printf("set output kAudioUnitProperty_StreamFormat\n");
+    
+    result = AudioUnitSetProperty(_Mixer, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, mAudioFormat.streamDescription, sizeof(AudioStreamBasicDescription));
+    if (result) { printf("AudioUnitSetProperty result %ld %08lX %4.4s\n", (long)result, (long)result, (char*)&result); return; }
+    
+    result = AudioUnitSetProperty(_Output, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, mAudioFormat.streamDescription, sizeof(AudioStreamBasicDescription));
+    if (result) { printf("AudioUnitSetProperty result %ld %08lX %4.4s\n", (long)result, (long)result, (char*)&result); return; }
+    
+    printf("AUGraphInitialize\n");
+    
+    // now that we've set everything up we can initialize the graph, this will also validate the connections
+    result = AUGraphInitialize(_Graph);
+    if (result) { printf("AUGraphInitialize result %ld %08lX %4.4s\n", (long)result, (long)result, (char*)&result); return; }
+    
+    CAShow(_Graph);
     
 }
 
 -(void)loadFiles{
-    AVAudioFormat * clientFormat = [[AVAudioFormat alloc] initWithCommonFormat:AVAudioPCMFormatFloat32 sampleRate:kGraphSampleRate channels:2 interleaved:YES];
+    AVAudioFormat * clientFormat = [[AVAudioFormat alloc] initWithCommonFormat:AVAudioPCMFormatFloat32 sampleRate:kGraphSampleRate channels:1 interleaved:YES];
     
-    for (int i = 0; i < NUMFILES; i++) {
+    for (int i = 0; i < NUMFILES && i < MAXBUFS; i++) {
         printf("loadFiles, %d\n", i);
         ExtAudioFileRef fileID = 0;
         //open one of the two source files
@@ -180,4 +321,21 @@ typedef struct {
     OSStatus result = AudioUnitSetParameter(_Mixer, kMultiChannelMixerParam_Volume, kAudioUnitScope_Output, 0, v, 0);
     if (result) { printf("AudioUnitSetParameter kMultiChannelMixerParam_Volume Output result %ld %08lX %4.4s\n", (long)result, (long)result, (char*)&result); return; }
 }
+
+
+- (void)dealloc
+{    
+    [_session setActive:NO];
+
+    printf("MultichannelMixerController dealloc\n");
+    
+    DisposeAUGraph(_Graph);
+    
+    free(mSoundBuffer[0].data);
+    free(mSoundBuffer[1].data);
+    
+    CFRelease(_sourceURL[0]);
+    CFRelease(_sourceURL[1]);
+}
+
 @end

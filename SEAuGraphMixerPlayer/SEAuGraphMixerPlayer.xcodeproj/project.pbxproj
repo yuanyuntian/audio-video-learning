@@ -15,9 +15,10 @@
 		B8CB0AAC2201BB960043EA05 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B8CB0AAB2201BB960043EA05 /* main.m */; };
 		B8CB0AB62201BB960043EA05 /* SEAuGraphMixerPlayerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B8CB0AB52201BB960043EA05 /* SEAuGraphMixerPlayerTests.m */; };
 		B8CB0AC12201BB960043EA05 /* SEAuGraphMixerPlayerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = B8CB0AC02201BB960043EA05 /* SEAuGraphMixerPlayerUITests.m */; };
-		B8CB0AD52201BC210043EA05 /* CAComponentDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B8CB0AD02201BC210043EA05 /* CAComponentDescription.cpp */; };
-		B8CB0AD62201BC210043EA05 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B8CB0AD32201BC210043EA05 /* CAXException.cpp */; };
 		B8CB0AD92201BC6B0043EA05 /* SEAuGraphMixerPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B8CB0AD82201BC6B0043EA05 /* SEAuGraphMixerPlayer.m */; };
+		B8CB0ADC2201BD810043EA05 /* 遇见.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B8CB0ADA2201BD7E0043EA05 /* 遇见.mp3 */; };
+		B8CB0ADD2201BD810043EA05 /* 可惜没如果.wav in Resources */ = {isa = PBXBuildFile; fileRef = B8CB0ADB2201BD800043EA05 /* 可惜没如果.wav */; };
+		B8CB0AE02201CE080043EA05 /* SEAVAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = B8CB0ADF2201CE070043EA05 /* SEAVAudioSession.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,14 +55,12 @@
 		B8CB0ABC2201BB960043EA05 /* SEAuGraphMixerPlayerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SEAuGraphMixerPlayerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8CB0AC02201BB960043EA05 /* SEAuGraphMixerPlayerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SEAuGraphMixerPlayerUITests.m; sourceTree = "<group>"; };
 		B8CB0AC22201BB960043EA05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B8CB0ACF2201BC210043EA05 /* CACFDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CACFDictionary.h; sourceTree = "<group>"; };
-		B8CB0AD02201BC210043EA05 /* CAComponentDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAComponentDescription.cpp; sourceTree = "<group>"; };
-		B8CB0AD12201BC210043EA05 /* CAComponentDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAComponentDescription.h; sourceTree = "<group>"; };
-		B8CB0AD22201BC210043EA05 /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
-		B8CB0AD32201BC210043EA05 /* CAXException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAXException.cpp; sourceTree = "<group>"; };
-		B8CB0AD42201BC210043EA05 /* CAXException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAXException.h; sourceTree = "<group>"; };
 		B8CB0AD72201BC6B0043EA05 /* SEAuGraphMixerPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SEAuGraphMixerPlayer.h; sourceTree = "<group>"; };
 		B8CB0AD82201BC6B0043EA05 /* SEAuGraphMixerPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SEAuGraphMixerPlayer.m; sourceTree = "<group>"; };
+		B8CB0ADA2201BD7E0043EA05 /* 遇见.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "遇见.mp3"; sourceTree = "<group>"; };
+		B8CB0ADB2201BD800043EA05 /* 可惜没如果.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "可惜没如果.wav"; sourceTree = "<group>"; };
+		B8CB0ADE2201CE070043EA05 /* SEAVAudioSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SEAVAudioSession.h; sourceTree = "<group>"; };
+		B8CB0ADF2201CE070043EA05 /* SEAVAudioSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SEAVAudioSession.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,7 +111,10 @@
 		B8CB0A9B2201BB950043EA05 /* SEAuGraphMixerPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				B8CB0ACE2201BC210043EA05 /* PublicUtility */,
+				B8CB0ADE2201CE070043EA05 /* SEAVAudioSession.h */,
+				B8CB0ADF2201CE070043EA05 /* SEAVAudioSession.m */,
+				B8CB0ADB2201BD800043EA05 /* 可惜没如果.wav */,
+				B8CB0ADA2201BD7E0043EA05 /* 遇见.mp3 */,
 				B8CB0A9C2201BB950043EA05 /* AppDelegate.h */,
 				B8CB0A9D2201BB950043EA05 /* AppDelegate.m */,
 				B8CB0A9F2201BB950043EA05 /* ViewController.h */,
@@ -144,19 +146,6 @@
 				B8CB0AC22201BB960043EA05 /* Info.plist */,
 			);
 			path = SEAuGraphMixerPlayerUITests;
-			sourceTree = "<group>";
-		};
-		B8CB0ACE2201BC210043EA05 /* PublicUtility */ = {
-			isa = PBXGroup;
-			children = (
-				B8CB0ACF2201BC210043EA05 /* CACFDictionary.h */,
-				B8CB0AD02201BC210043EA05 /* CAComponentDescription.cpp */,
-				B8CB0AD12201BC210043EA05 /* CAComponentDescription.h */,
-				B8CB0AD22201BC210043EA05 /* CADebugMacros.h */,
-				B8CB0AD32201BC210043EA05 /* CAXException.cpp */,
-				B8CB0AD42201BC210043EA05 /* CAXException.h */,
-			);
-			path = PublicUtility;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,6 +251,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8CB0ADC2201BD810043EA05 /* 遇见.mp3 in Resources */,
+				B8CB0ADD2201BD810043EA05 /* 可惜没如果.wav in Resources */,
 				B8CB0AA92201BB960043EA05 /* LaunchScreen.storyboard in Resources */,
 				B8CB0AA62201BB960043EA05 /* Assets.xcassets in Resources */,
 				B8CB0AA42201BB950043EA05 /* Main.storyboard in Resources */,
@@ -289,11 +280,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B8CB0AD62201BC210043EA05 /* CAXException.cpp in Sources */,
 				B8CB0AA12201BB950043EA05 /* ViewController.m in Sources */,
 				B8CB0AAC2201BB960043EA05 /* main.m in Sources */,
+				B8CB0AE02201CE080043EA05 /* SEAVAudioSession.m in Sources */,
 				B8CB0AD92201BC6B0043EA05 /* SEAuGraphMixerPlayer.m in Sources */,
-				B8CB0AD52201BC210043EA05 /* CAComponentDescription.cpp in Sources */,
 				B8CB0A9E2201BB950043EA05 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
