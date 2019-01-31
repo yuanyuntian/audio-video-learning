@@ -18,6 +18,8 @@
 1 利用AudioUnit播放本地pcm文件(参考项目AUGraphPlayer)
 2 实现播放暂停功能，获取文件信息
 3 实现播放MP3和PCM功能
+4 AudioUnit+AudioFile播放MP3和PCM，其中mp3需要进行格式转换
+5 AudioUnit+AudioFile播放MP3和PCM，其中mp3不需要进行格式转换
 
         
         
