@@ -55,7 +55,7 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
     // but only provide a single channel of data from each input bus when asked and silence for the other channel
     // alternating as appropriate when asked to render bus 0 or bus 1's input
     
-    for (UInt32 i = 0; i < inBusNumber; ++i) {
+    for (UInt32 i = 0; i < inNumberFrames; ++i) {
         if (inBusNumber == 1) {
             outA[i] = 0;
             outB[i] = in[sample++];
